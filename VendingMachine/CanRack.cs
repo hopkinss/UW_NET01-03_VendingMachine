@@ -40,6 +40,7 @@ namespace VendingMachine
                 this.cans.Add(new Can(FlavorOfCanToBeAdded));
             }
         }
+       
 
         public void RemoveACanOf(Flavor FlavorOfCanToBeRemoved)
         {
@@ -92,6 +93,15 @@ namespace VendingMachine
                 }
             }
             return content;
+        }
+        public Content Contents(Flavor flavor)
+        {
+            return new Content()
+            {
+                Amount = cans.Count(x => x.Flavor == flavor),
+                Flavor = flavor
+            };
+
         }
     }
 }

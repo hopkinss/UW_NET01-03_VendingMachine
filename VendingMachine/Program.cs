@@ -14,7 +14,7 @@ namespace VendingMachine
         {
             // 1) Creates and instance of can rack and set maxInventory 
             // 2)  Creates an instance of PurchasePrice and sets price
-            var vendingMachine = new VendingMachine(2, 75.0m);
+            var vendingMachine = new VendingMachine(1, 75.0m);
 
             // display the PurchasePrice.Price property
             Console.WriteLine($"The price of a soda is {vendingMachine.PurchasePrice.Price} cents\n");
@@ -25,7 +25,7 @@ namespace VendingMachine
             bool isVending = true;
             while (isVending)
             {
-                Console.WriteLine($"Enter a flavor from the menu:\n\n{string.Join('\n',vendingMachine.AvailableFlavors())} \n\n--Current inventory--");
+                Console.WriteLine($"--Soda Options--\n{string.Join('\n',vendingMachine.AvailableFlavors())} \n\n--Current inventory--");
                 Console.ForegroundColor = ConsoleColor.Blue;
 
                 // display contents of CanRack for each Can using can.tostring override
@@ -37,7 +37,7 @@ namespace VendingMachine
                 Console.ForegroundColor = ConsoleColor.White;
 
                 // Parse user response into enum
-                Console.WriteLine("\n");
+                Console.Write("\nEnter a flavor: ");
                 if (Enum.TryParse<Flavor>(Console.ReadLine(), true, out Flavor soda))
                 {
                     // If its not emtpy remove a can
