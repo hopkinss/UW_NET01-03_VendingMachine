@@ -7,7 +7,7 @@ namespace VendingMachine
     class Program
     {
         // Hopkins, Shawn, hopkinss
-        // Exercise 03 - Vending Machine
+        // Exercise 02 - Vending Machine
         // shawn.hopkins1@gmail.com
 
         static void Main(string[] args)
