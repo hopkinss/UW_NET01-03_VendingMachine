@@ -21,6 +21,7 @@ namespace VendingMachine
 
             // Calls the CanRack.FillTheCanRack method to set the inventory of each flavor to maxinventory
             vendingMachine.CanRack.FillTheCanRack();
+            vendingMachine.CanRack.DebugWriteCanRackContents(); // Write canrack inventory to debug window
 
             bool isVending = true;
             while (isVending)

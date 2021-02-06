@@ -21,9 +21,6 @@ namespace VendingMachine.Tests
             Assert.AreEqual(ppDec.PriceDecimal, 75m);
             Assert.AreEqual(ppInt.PriceDecimal, 75m);
         }
-
-
-
         [TestMethod]
         public void CanCtorTest()
         {

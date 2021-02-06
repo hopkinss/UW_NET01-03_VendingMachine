@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using System.Collections;
+using System.Diagnostics;
 
 namespace VendingMachine
 {
@@ -101,7 +102,15 @@ namespace VendingMachine
                 Amount = cans.Count(x => x.Flavor == flavor),
                 Flavor = flavor
             };
+        }
 
+        public void DebugWriteCanRackContents()
+        {
+            foreach (Content v in this.Contents())
+            {
+                var suf = v.Amount > 1 ? "s" : string.Empty;
+                Debug.WriteLine($"{v.Amount} can{suf} of {v.Flavor} soda in the inventory");
+            }
         }
     }
 }
