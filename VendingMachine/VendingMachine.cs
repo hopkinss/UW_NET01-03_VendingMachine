@@ -39,10 +39,5 @@ namespace VendingMachine
             get { return purchasePrice; }
             set { purchasePrice = value; }
         }
-
-        public List<Flavor> AvailableFlavors()
-        {
-            return Enum.GetValues(typeof(Flavor)).Cast<Flavor>().ToList();
-        }
     }
 }
