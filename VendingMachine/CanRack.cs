@@ -7,26 +7,22 @@ using System.Diagnostics;
 
 namespace VendingMachine
 {
+   
     public class CanRack
     {
         private int maxInventory;
-        private List<Can> cans = new List<Can>();
+        private Dictionary<int,CanInventory> cans;
 
         public CanRack()
         {
-            this.Cans = new List<Can>();
+            this.cans = new Dictionary<int, CanInventory>();
         }
         public CanRack(int inventory)
         {
             this.maxInventory = inventory;
-            this.Cans = new List<Can>();
+            this.cans = new Dictionary<int, CanInventory>();
         }
 
-        public List<Can> Cans
-        {
-            get { return cans; }
-            set { cans = value; }
-        }
 
         public int MaxInventory
         {
@@ -36,18 +32,27 @@ namespace VendingMachine
 
         public void AddACanOf(Flavor FlavorOfCanToBeAdded)
         {
-            if (!IsFull(FlavorOfCanToBeAdded))
+            if (this.cans.ContainsKey((int)FlavorOfCanToBeAdded))
             {
-                this.cans.Add(new Can(FlavorOfCanToBeAdded));
+                if(!IsFull(FlavorOfCanToBeAdded))
+                {
+                    cans[(int)FlavorOfCanToBeAdded].Amount++;
+                }
+            }
+            else
+            {
+                cans.Add((int)FlavorOfCanToBeAdded,new CanInventory(1,new Can(FlavorOfCanToBeAdded)));
             }
         }
-       
 
         public void RemoveACanOf(Flavor FlavorOfCanToBeRemoved)
         {
-            if (!IsEmpty(FlavorOfCanToBeRemoved))
+            if (this.cans.ContainsKey((int)FlavorOfCanToBeRemoved))
             {
-                this.cans.Remove(this.cans.FirstOrDefault(x => x.Flavor == FlavorOfCanToBeRemoved));
+                if (!IsEmpty(FlavorOfCanToBeRemoved))
+                {
+                    cans[(int)FlavorOfCanToBeRemoved].Amount--;
+                }
             }
         }
 
@@ -57,60 +62,60 @@ namespace VendingMachine
             {                
                 while (!IsFull(f))
                 {
-                    this.cans.Add(new Can(f));
+                    AddACanOf(f);
                 }
             }
         }
 
         public void EmptyCanRackOf(Flavor flavor)
         {
-            this.Cans.RemoveAll(x => x.Flavor == flavor);
+            if (this.cans.ContainsKey((int)flavor))
+            {
+                if (!IsEmpty(flavor))
+                {
+                    cans[(int)flavor].Amount=0;
+                }
+            }
         }
 
         public bool IsFull(Flavor flavor)
         {
-            return this.cans.Where(x=>x.Flavor==flavor).Count() >= this.maxInventory;
+            if (this.cans.TryGetValue((int)flavor,out CanInventory can))
+            {
+                return can.Amount >= this.maxInventory;
+            }
+            return false;
         }
 
         public bool IsEmpty(Flavor flavor)
         {
-            return this.cans.Where(x => x.Flavor == flavor).Count() == 0;
-        }
-
-        public List<Content> Contents()
-        { 
-            var content =  this.cans.GroupBy(x => x.Flavor)
-                .Select(g => new Content { Flavor = g.Key, Amount = g.Count() }).ToList();
-
-            foreach (Flavor f  in Enum.GetValues(typeof(Flavor)))
+            if (this.cans.TryGetValue((int)flavor, out CanInventory can))
             {
-                if (content.FirstOrDefault(x=>x.Flavor==f) is null)
-                {
-                    content.Add(new Content()
-                    {
-                        Flavor = f,
-                        Amount = 0
-                    });
-                }
+                return can.Amount == 0;
             }
-            return content;
+            return true;
         }
-        public Content Contents(Flavor flavor)
-        {
-            return new Content()
-            {
-                Amount = cans.Count(x => x.Flavor == flavor),
-                Flavor = flavor
-            };
 
-        }
-        public void DebugWriteCanRackContents()
+        public List<CanInventory> DisplayCanRack()
         {
-            foreach (Content v in this.Contents())
-            {
-                var suf = v.Amount > 1 ? "s" : string.Empty;
-                Debug.WriteLine($"{v.Amount} can{suf} of {v.Flavor} soda in the inventory");
-            }
+            return this.cans.Values.Select(x => new CanInventory(x.Amount, x.Can)).ToList();
         }
+
+        public CanInventory DisplayCanRack(Flavor flavor)
+        {
+            return this.cans.Values.Where(x => x.Can.Flavor == flavor)
+                .Select(x => new CanInventory(x.Amount, x.Can)).FirstOrDefault();
+        }
+    }
+
+    public class CanInventory
+    {
+        public CanInventory(int amount,Can can)
+        {
+            Amount = amount;
+            Can = can;
+        }
+        public int Amount { get; set; }
+        public Can Can { get; set; }
     }
 }

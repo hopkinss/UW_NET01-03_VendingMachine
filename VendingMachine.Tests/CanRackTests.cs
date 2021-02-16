@@ -5,23 +5,8 @@ using System.Collections.Generic;
 namespace VendingMachine.Tests
 {
     [TestClass]
-    public class VendingMachine
+    public class CanRackTests
     {
-        [TestMethod]
-        public void PurchasePriceCtorTest()
-        {
-            var pp0 = new PurchasePrice();
-            var ppDec = new PurchasePrice(75.0m);
-            var ppInt = new PurchasePrice(75);
-
-            Assert.AreEqual(pp0.Price, 0);
-            Assert.AreEqual(ppDec.Price, 75);
-            Assert.AreEqual(ppInt.Price, 75);
-            Assert.AreEqual(pp0.PriceDecimal, 0m);
-            Assert.AreEqual(ppDec.PriceDecimal, 75m);
-            Assert.AreEqual(ppInt.PriceDecimal, 75m);
-        }
-
 
 
         [TestMethod]
@@ -37,31 +22,31 @@ namespace VendingMachine.Tests
         [TestMethod]
         public void CanRackCtorTest()
         {
-            var cr = new CanRack(5);
+            var cr = new global::VendingMachine.CanRack(5);
             Assert.AreEqual(cr.MaxInventory, 5);
         }
         [TestMethod]
         public void CanRackFillCanRackTest()
         {
-            var cr = new CanRack(3);
+            var cr = new global::VendingMachine.CanRack(3);
             cr.FillTheCanRack();
             foreach (Flavor f in Enum.GetValues(typeof(Flavor)))
             {
                 // Check the filled canRack by flavor
-                Assert.AreEqual(cr.Contents(f).Amount, 3);
+                Assert.AreEqual(cr.DisplayCanRack(f).Amount, 3);
             }
         }
         [TestMethod]
         public void CanRackEmptyRackOfTest()
         {
-            var cr = new CanRack(3);
+            var cr = new global::VendingMachine.CanRack(3);
             cr.FillTheCanRack();
 
             // Empty each flavor and confirm amount is zero
             foreach (Flavor f in Enum.GetValues(typeof(Flavor)))
             {
                 cr.EmptyCanRackOf(f);
-                Assert.AreEqual(cr.Contents(f).Amount, 0);
+                Assert.AreEqual(cr.DisplayCanRack(f).Amount, 0);
             }
         }
 
@@ -69,7 +54,7 @@ namespace VendingMachine.Tests
         public void CanRackAddACanOfTest()
         {
             int maxInventory = 6;
-            var cr = new CanRack(maxInventory);
+            var cr = new global::VendingMachine.CanRack(maxInventory);
 
             // Attempt to add 3 more cans than the maximum allowed
             foreach (Flavor f in Enum.GetValues(typeof(Flavor)))
@@ -79,9 +64,9 @@ namespace VendingMachine.Tests
                     cr.AddACanOf(f);
                     // Check the cans are incrementing up to the max inventory, but not over
                     if (i <= maxInventory)
-                        Assert.AreEqual(cr.Contents(f).Amount, i);
+                        Assert.AreEqual(cr.DisplayCanRack(f).Amount, i);
                     else
-                        Assert.AreNotEqual(cr.Contents(f).Amount, i);
+                        Assert.AreNotEqual(cr.DisplayCanRack(f).Amount, i);
                 }
             }
         }
@@ -90,7 +75,7 @@ namespace VendingMachine.Tests
         public void CanRackRemoveACanOfTest()
         {
             int maxInventory = 3;
-            var cr = new CanRack(maxInventory);
+            var cr = new global::VendingMachine.CanRack(maxInventory);
             cr.FillTheCanRack();
             foreach (Flavor f in Enum.GetValues(typeof(Flavor)))
             {
@@ -98,7 +83,7 @@ namespace VendingMachine.Tests
                 {
                     // Check inventory is decremented by 1 for each iteration but never less than 0
                     cr.RemoveACanOf(f);
-                    Assert.AreEqual(cr.Contents(f).Amount, Math.Max(0, i - 1));
+                    Assert.AreEqual(cr.DisplayCanRack(f).Amount, Math.Max(0, i - 1));
                 }
             }
         }
@@ -106,7 +91,7 @@ namespace VendingMachine.Tests
         public void CanRackIsFullTest()
         {
             int maxInventory = 5;
-            var cr = new CanRack(maxInventory);
+            var cr = new global::VendingMachine.CanRack(maxInventory);
 
             foreach (Flavor f in Enum.GetValues(typeof(Flavor)))
             {
@@ -127,7 +112,7 @@ namespace VendingMachine.Tests
         {
 
             int maxInventory = 5;
-            var cr = new CanRack(maxInventory);
+            var cr = new global::VendingMachine.CanRack(maxInventory);
             cr.FillTheCanRack();
 
             foreach (Flavor f in Enum.GetValues(typeof(Flavor)))
@@ -144,5 +129,7 @@ namespace VendingMachine.Tests
                 }
             }
         }
+
+
     }
 }

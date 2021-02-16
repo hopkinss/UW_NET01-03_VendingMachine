@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "VendingMachine
 		{4E1A6730-2F35-4103-BC6B-70D6AB9AE686} = {4E1A6730-2F35-4103-BC6B-70D6AB9AE686}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Currency", "Payment\Currency.csproj", "{6D9F0C2F-D648-41BC-ACBF-74FDA88AC7C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Currency", "Payment\Currency.csproj", "{6D9F0C2F-D648-41BC-ACBF-74FDA88AC7C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

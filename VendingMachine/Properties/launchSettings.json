@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "VendingMachine": {
+      "commandName": "Project",
+      "commandLineArgs": "Vend quarter quarter halfdollar dime nickel orange"
+    }
+  }
+}

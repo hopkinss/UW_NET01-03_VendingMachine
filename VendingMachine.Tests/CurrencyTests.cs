@@ -4,11 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Currency.Tests
+
+namespace VendingMachine.Tests
 {
  
     [TestClass]
-    public class Currency
+    public class CurrencyTests
     {
         [TestMethod]
         public void CoinCtorTest()
@@ -25,7 +26,7 @@ namespace Currency.Tests
             var coin = new Coin(Denomination.NICKEL);
             Assert.AreEqual(coin.CoinEnumeral, Denomination.NICKEL);
             Assert.AreEqual(coin.ValueOf, 5M);
-            Assert.ThrowsException<ArgumentException>( Ctor(() => new Coin((Denomination)4)));
+            Assert.ThrowsException<ArgumentException>(Ctor(() => new Coin((Denomination)4)));
         }
 
         [TestMethod]
@@ -45,14 +46,7 @@ namespace Currency.Tests
             Assert.AreEqual(coin.ValueOf, 50M);
             Assert.ThrowsException<ArgumentException>(Ctor(() => new Coin(30M)));
         }
-        [TestMethod]
-        public void CoinToStringTest()
-        {
-            foreach (Denomination d in Denomination.GetValues(typeof(Denomination)))
-            {
-                Assert.AreEqual(new Coin(d).ToString().ToUpper(), d.ToString());        
-            }
-        }
+
 
         static Action Ctor<T>(Func<T> func)
         {
