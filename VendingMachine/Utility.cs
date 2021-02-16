@@ -14,7 +14,7 @@ namespace VendingMachine
 
             DescriptionAttribute[] attributes = 
                 (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
-
+            
             if (attributes != null && attributes.Length > 0) return attributes[0].Description;
             else return source.ToString();
         }

@@ -16,19 +16,14 @@ namespace VendingMachine
 
         static void Main(string[] args)
         {
-
- 
-
-
-          
-
-            var vendingMachine = new VendingMachine(3, 75.0m);
+           
+            var vendingMachine = new VendingMachine(3,50);
             vendingMachine.CanRack.FillTheCanRack();
 
-            // parse cmdline arguments 
+            // If Command-line args are provided in the debugger the app will not dispaly the UI
             CmdArgs cmd = new CmdArgs(vendingMachine.PurchasePrice.Price, args);
 
-            // If valid cmdline arguments are provided, app performs specificed action outside of UI
+            // commandline args pass validation
             if (cmd.IsArgsOk)
             {
                 // automate vending without 'UI'
@@ -41,11 +36,11 @@ namespace VendingMachine
             }
 
             // Otherwise display the UI
-            Console.WriteLine($"The price of a soda is {vendingMachine.PurchasePrice.Price} cents. Hit 'Esc' to end at any time\n");
-
             bool isVending = true;
             while (isVending)
             {
+                Console.WriteLine($"\nThe price of a soda is {vendingMachine.PurchasePrice.Price} cents. Hit 'Esc' to end at any time\n");
+
                 // Enter coins
                 Console.WriteLine("\nHit the key of that corresponds to the coin to enter into the vending machine (enter to submit)\n");
                 foreach (var c in Enum.GetValues(typeof(Denomination)))
@@ -117,13 +112,12 @@ namespace VendingMachine
                             if (vendingMachine.CoinBox.IsAmountSufficient())
                             {
                                 vendingMachine.CanRack.RemoveACanOf(soda);
-                                var refund = vendingMachine.CoinBox.ProcessRefund();
+                                var refund = vendingMachine.CoinBox.MakePurchase();
 
                                 Console.Write($"Here's your can of {soda} soda");
 
                                 if (refund.Count() > 0)
                                 {
-                                    Console.WriteLine($" and your refund of {refund.Sum(x => x.ValueOf)} cents");
                                     DisplayRefund(refund.ToList());
                                 }
                                 Console.WriteLine("\nHit any key to continue");
@@ -175,6 +169,7 @@ namespace VendingMachine
 
         private static void DisplayRefund(List<Coin> refund)
         {
+            Console.WriteLine($"\n  _Refunding {refund.Sum(x => x.ValueOf)} cents...");
             Console.ForegroundColor = ConsoleColor.Green;
             foreach(var c in refund)
             {               
