@@ -4,7 +4,6 @@ using System.Text;
 
 namespace VendingMachine
 {
-    public enum Flavor {Regular = 1, Orange, Lemon }
     public class Can
     {
         private Flavor flavor;

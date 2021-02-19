@@ -165,6 +165,7 @@ namespace VendingMachine
                 Console.WriteLine($"\t{(int)v.Can.Flavor}) There is {v.Amount} can{suf} of {v.Can.Flavor} soda in the rack   ");
             }
             Console.ForegroundColor = ConsoleColor.White;
+
         }
 
         private static void DisplayRefund(List<Coin> refund)
