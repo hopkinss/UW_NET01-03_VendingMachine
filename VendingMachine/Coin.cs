@@ -7,7 +7,8 @@ using System.Text;
 
 namespace VendingMachine
 {
-    public enum Denomination { 
+    public enum Denomination
+    {
         [Description("Slug")]
         SLUG = 0,
         [Description("Nickel")]
@@ -17,23 +18,21 @@ namespace VendingMachine
         [Description("Quarter")]
         QUARTER = 25,
         [Description("Half-dollar")]
-        HALFDOLLAR = 50 
+        HALFDOLLAR = 50
     }
+
     public class Coin
     {
-
-        private Denomination denomination;
-
         public Coin()
         {
-            this.denomination = Denomination.SLUG;
+            this.CoinEnumeral = Denomination.SLUG;
         }
 
         public Coin(Denomination CoinEnumeral)
         {
             if (IsValid(typeof(Denomination), CoinEnumeral))
             {
-                this.denomination = CoinEnumeral;
+                this.CoinEnumeral = CoinEnumeral;
             }
             else
                 throw new ArgumentException("Invalid demonination for coin");
@@ -43,7 +42,7 @@ namespace VendingMachine
         {
             if (Enum.TryParse<Denomination>(CoinName,true,out Denomination coin))
             {
-                this.denomination = coin;
+                this.CoinEnumeral = coin;
             }
             else
                 throw new ArgumentException("Invalid name for coin");
@@ -53,7 +52,7 @@ namespace VendingMachine
         {
             if (IsValid(typeof(Denomination),((Denomination)Convert.ToInt32((decimal)CoinValue))))
             {
-                this.denomination = ((Denomination)Convert.ToInt32((decimal)CoinValue));
+                this.CoinEnumeral = ((Denomination)Convert.ToInt32((decimal)CoinValue));
             }
             else
                 throw new ArgumentException("Invalid value for coin");
@@ -63,18 +62,15 @@ namespace VendingMachine
         {
             get 
             { 
-                return Convert.ToDecimal((int)this.denomination); 
+                return Convert.ToDecimal((int)this.CoinEnumeral); 
             }
         }
 
-        public Denomination CoinEnumeral
-        {
-            get => this.denomination;
-        }
+        public Denomination CoinEnumeral { get; }
 
         public override string ToString()
         {
-            return Utility.GetFriendlyName<Denomination>(this.denomination); 
+            return Utility.GetFriendlyName<Denomination>(this.CoinEnumeral); 
         }
 
         private bool IsValid(Type t, Enum v)

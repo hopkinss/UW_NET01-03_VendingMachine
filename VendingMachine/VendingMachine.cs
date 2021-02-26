@@ -14,7 +14,11 @@ namespace VendingMachine
 
         private PurchasePrice purchasePrice;
         private CanRack canRack;
-        private CoinBox coinBox;
+        private Transaction transaction;
+        private CoinBox box;
+
+
+
 
         public VendingMachine(int inventory,dynamic price)
         {
@@ -24,7 +28,9 @@ namespace VendingMachine
             {
                 this.canRack = new CanRack(inventory);
                 this.purchasePrice = new PurchasePrice(price);
-                this.coinBox = new CoinBox(purchasePrice.Price);
+                this.transaction = new Transaction(purchasePrice.Price);
+                //this.box = new CoinBox(CoinBox.GenerateRandomSeed(50).ToList());
+                this.box = new CoinBox();
             }
             else
                 throw new ArgumentException($"Value must be an integer or decimal type");
@@ -42,11 +48,16 @@ namespace VendingMachine
             set { purchasePrice = value; }
         }
 
-        public CoinBox CoinBox
+        public Transaction Transaction
         {
-            get { return coinBox; }
-            set { coinBox = value; }
+            get { return transaction; }
+            set { transaction = value; }
 
+        }
+        public CoinBox Box
+        {
+            get { return box; }
+            set { box = value; }
         }
 
         public string AutoVend(CmdArgs cmd)
@@ -55,20 +66,20 @@ namespace VendingMachine
             if (cmd.IsArgsOk)
             {
                 foreach (var c in cmd.Coins)
-                    this.coinBox.AddCoin(c);
+                    this.transaction.AddCoin(c);
 
                 // if there is inventory
                 if (!this.canRack.IsEmpty(cmd.Flavor))
                 {
                     // and amount of money is sufficent
-                    if (this.coinBox.IsAmountSufficient())
+                    if (this.transaction.IsAmountSufficient())
                     {
                         this.canRack.RemoveACanOf(cmd.Flavor);
                         json.Msg = $"can of {cmd.Flavor} dispensed";
                         json.IsSuccess = true;
 
                         // use coin.tostring override to display enum descripition
-                        json.Refund = this.CoinBox.ProcessRefund().Select(x => x.ToString()).ToList();
+                        //json.Refund = this.transaction.ProcessPayment().Select(x => x.ToString()).ToList();
                     }
                     else
                     {

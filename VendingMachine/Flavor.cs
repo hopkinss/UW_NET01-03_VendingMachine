@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace VendingMachine
 {
@@ -10,16 +12,25 @@ namespace VendingMachine
 
         static FlavorOps()
         {
-
+            allFlavors.AddRange(Enum.GetValues(typeof(Flavor)).Cast<Flavor>().ToList());
         }
 
-        //public static List<Flavor> AllFlavors
-        //{
+        public static List<Flavor> AllFlavors
+        {
+            get { return allFlavors; }
+        }
 
-        //}
-        //public static Flavor ToFlavor(string FlavorName)
-        //{
+        public static Flavor ToFlavor(string FlavorName)
+        {
+            if (Enum.TryParse<Flavor>(FlavorName,true,out Flavor flavor))
+            {
+                if (Enum.IsDefined(typeof(Flavor),flavor))
+                {
+                    return flavor;
+                }
+            }
 
-        //}
+            return default;
+        }
     }
 }

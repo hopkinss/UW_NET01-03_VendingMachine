@@ -58,7 +58,7 @@ namespace VendingMachine
 
         public void FillTheCanRack()
         {
-            foreach (Flavor f in Enum.GetValues(typeof(Flavor)))
+            foreach (Flavor f in FlavorOps.AllFlavors)
             {                
                 while (!IsFull(f))
                 {

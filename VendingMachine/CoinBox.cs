@@ -7,96 +7,77 @@ namespace VendingMachine
 {
     public class CoinBox
     {
-        private List<Coin> coins;
+        private List<Coin> box;
         private int price;
         private int balance;
 
-        public CoinBox(int price)
+        public CoinBox()
         {
-            this.coins = new List<Coin>();
-            this.price = price;
-            SetBalance();
+            this.box = new List<Coin>();
+        }
+        public CoinBox(List<Coin> SeedMoney)
+        {
+            this.box = new List<Coin>();
+            box.AddRange(SeedMoney);
         }
 
-        public List<Coin> Coins
+        public void Deposit(Coin Acoin)
         {
-            get { return this.coins; }        
+            box.Add(Acoin);
         }
 
-
-        public int Balance
+        public bool Withdraw(Denomination ACoinDenomination)
         {
-            get { return balance; }
-            set { balance = value; }
-        }
-
-        public void AddCoin(Coin coin)
-        {
-            this.coins.Add(coin);
-            SetBalance();
-        }
-        public void RemoveCoin(Coin coin)
-        {
-            var coinToRemove = this.coins.Where(x => x.CoinEnumeral == coin.CoinEnumeral).FirstOrDefault();
+            var coinToRemove = this.box.FirstOrDefault(x => x.CoinEnumeral == ACoinDenomination);
             if (coinToRemove != null)
             {
-                this.coins.Remove(coinToRemove);
-                SetBalance();
-            }
-        }
-
-        public bool IsAmountSufficient()
-        {
-            return this.coins.Sum(x => x.ValueOf) >= this.price;
-        }
-
-        private void SetBalance()
-        {
-            this.balance = price - (int)this.coins.Sum(x => x.ValueOf);
-        }
-
-        public List<Coin> MakePurchase()
-        {
-            var refund = ProcessRefund().ToList();
-            this.coins.Clear();
-            SetBalance();
-            return refund;
-        }
-
-        public IEnumerable<Coin> ProcessRefund()
-        {
-            var remainder = Math.Abs(this.balance);
-            var returnedCoins = new List<Coin>();
-            while (remainder > 0)
-            {
-                foreach (var d in Enum.GetValues(typeof(Denomination)).Cast<Denomination>().Where(x=>(int)x>0).Reverse())
-                {
-                    while ((int)d<=remainder)
-                    {                        
-                        remainder -= (int)d;
-                        yield return new Coin(d);
-                    }             
-                }
-            }
-        }
-
-        public bool ParseCoin(ConsoleKeyInfo key)
-        {
-            var parseDict = new Dictionary<ConsoleKey, Denomination> {
-                { ConsoleKey.S,Denomination.SLUG },
-                { ConsoleKey.N,Denomination.NICKEL },
-                { ConsoleKey.D,Denomination.DIME },
-                { ConsoleKey.Q,Denomination.QUARTER },
-                { ConsoleKey.H,Denomination.HALFDOLLAR },
-            };
-
-            if (parseDict.TryGetValue(key.Key,out Denomination coin))
-            {
-                AddCoin(new Coin(coin));
+                this.box.Remove(coinToRemove);
                 return true;
             }
-            else
-                return false;
+            return false;
         }
+
+        public int HalfDollarCount
+        {
+            get { return CoinCount(Denomination.HALFDOLLAR); }
+        }
+        public int QuarterCount
+        {
+            get { return CoinCount(Denomination.QUARTER); }
+        }
+        public int DimeCount
+        {
+            get { return CoinCount(Denomination.DIME); }
+        }
+        public int NickelCount
+        {
+            get { return CoinCount(Denomination.NICKEL); }
+        }
+        public int SlugCount
+        {
+            get { return CoinCount(Denomination.SLUG); }
+        }
+
+        public int CoinCount(Denomination denomination)
+        {
+           return this.box.Where(x => x.CoinEnumeral == denomination).Count();
+        }
+
+        public decimal ValueOf
+        {
+            get { return this.box.Sum(x => x.ValueOf); }
+        }
+
+ 
+        public static IEnumerable<Coin> GenerateRandomSeed(int coinCount)
+        {
+            var coins = Enum.GetValues(typeof(Denomination)).Cast<Denomination>().ToArray();
+            var random = new Random();
+            for(int i = 0; i < coinCount; i++)
+            {
+                yield return new Coin(coins[random.Next(0, 4)]);
+            }
+        }
+
     }
 }

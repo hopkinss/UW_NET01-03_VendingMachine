@@ -60,7 +60,8 @@ namespace VendingMachine
 
         private void ParseFlavor(string arg)
         {
-            if (Enum.TryParse(typeof(Flavor), arg, true, out object result))
+            var result = FlavorOps.ToFlavor(arg);
+            if (result!=default)
             {
                 this.Flavor = (Flavor)result;
             }

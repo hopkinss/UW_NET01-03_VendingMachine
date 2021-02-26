@@ -15,8 +15,7 @@ namespace VendingMachine
         // shawn.hopkins1@gmail.com
 
         static void Main(string[] args)
-        {
-           
+        {           
             var vendingMachine = new VendingMachine(3,50);
             vendingMachine.CanRack.FillTheCanRack();
 
@@ -64,17 +63,17 @@ namespace VendingMachine
                     // leave
                     else if (rk.Key==ConsoleKey.Escape)
                     {
-                        LeaveApp(vendingMachine.CoinBox);
+                        LeaveApp(vendingMachine.Transaction);
                     }
                     // add a coin to the balanace
                     else
                     {
-                        if (vendingMachine.CoinBox.ParseCoin(rk))
+                        if (vendingMachine.Transaction.ParseCoin(rk))
                         {
                             // While amount of coins are less than price of soda
-                            if (!vendingMachine.CoinBox.IsAmountSufficient())
+                            if (!vendingMachine.Transaction.IsAmountSufficient())
                             {
-                                Console.WriteLine($" a {vendingMachine.CoinBox.Coins.LastOrDefault()}, add {vendingMachine.CoinBox.Balance} more cents");
+                                Console.WriteLine($" a {vendingMachine.Transaction.Coins.LastOrDefault()}, add {vendingMachine.Transaction.Balance} more cents");
                             }
                             else
                             {
@@ -98,53 +97,55 @@ namespace VendingMachine
                 var key = Console.ReadKey();
                 if (key.Key == ConsoleKey.Escape)
                 {
-                    LeaveApp(vendingMachine.CoinBox);
+                    LeaveApp(vendingMachine.Transaction);
                 }
 
                 var selection = key.KeyChar.ToString() + Console.ReadLine();
-                if (Enum.TryParse<Flavor>(selection, true, out Flavor soda))
+                var soda = FlavorOps.ToFlavor(selection);
+                if (soda !=default)
                 {
-                    if (Enum.IsDefined(typeof(Flavor), soda))
+                    // If its not emtpy remove a can
+                    if (!vendingMachine.CanRack.IsEmpty(soda))
                     {
-                        // If its not emtpy remove a can
-                        if (!vendingMachine.CanRack.IsEmpty(soda))
+                        if (vendingMachine.Transaction.IsAmountSufficient())
                         {
-                            if (vendingMachine.CoinBox.IsAmountSufficient())
-                            {
-                                vendingMachine.CanRack.RemoveACanOf(soda);
-                                var refund = vendingMachine.CoinBox.MakePurchase();
-
-                                Console.Write($"Here's your can of {soda} soda");
-
-                                if (refund.Count() > 0)
-                                {
-                                    DisplayRefund(refund.ToList());
-                                }
-                                Console.WriteLine("\nHit any key to continue");
-
-                                Console.ReadKey();
-                            }
-                            else
-                            {
-                                Console.WriteLine($"Please deposit {vendingMachine.CoinBox.Balance} more cents");
+                            vendingMachine.CanRack.RemoveACanOf(soda);
  
+                            // Make the purchase and deposit the money into the coinbox 
+
+
+                            foreach (var coin in vendingMachine.Transaction.MakePurchase())
+                            {
+                                vendingMachine.Box.Deposit(coin);
                             }
+
+                            var refund = vendingMachine.Transaction.GetRefund();
+
+                            Console.Write($"Here's your can of {soda} soda");
+
+                            if (refund.Count() > 0)
+                            {
+                                DisplayRefund(refund.ToList());
+                            }
+                            Console.WriteLine("\nHit any key to continue");
+
+                            Console.ReadKey();
                         }
-                        // Otherwise prompt to add a can
                         else
                         {
-                            Console.Write($"\n\nThe {soda} soda is empty. Do you wish to add a can (y/n)? ");
-
-                            if (Console.ReadKey().Key == ConsoleKey.Y)
-                            {
-                                vendingMachine.CanRack.AddACanOf(soda);
-                            }
+                            Console.WriteLine($"Please deposit {vendingMachine.Transaction.Balance} more cents");
+ 
                         }
                     }
+                    // Otherwise prompt to add a can
                     else
                     {
-                        Console.WriteLine("Invalid soda flavor\nhit any key to continue");
-                        Console.ReadKey();
+                        Console.Write($"\n\nThe {soda} soda is empty. Do you wish to add a can (y/n)? ");
+
+                        if (Console.ReadKey().Key == ConsoleKey.Y)
+                        {
+                            vendingMachine.CanRack.AddACanOf(soda);
+                        }
                     }
                 }
                 else
@@ -178,11 +179,10 @@ namespace VendingMachine
             }
             Console.ForegroundColor = ConsoleColor.White;
         }
-        private static void LeaveApp(CoinBox purse)
+        private static void LeaveApp(Transaction purse)
         {
             DisplayRefund(purse.Coins);
             Environment.Exit(0);
         }
-
     }
 }
