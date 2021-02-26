@@ -23,6 +23,8 @@ namespace VendingMachine
 
     public class Coin
     {
+
+
         public Coin()
         {
             this.CoinEnumeral = Denomination.SLUG;

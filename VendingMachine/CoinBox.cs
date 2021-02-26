@@ -8,8 +8,6 @@ namespace VendingMachine
     public class CoinBox
     {
         private List<Coin> box;
-        private int price;
-        private int balance;
 
         public CoinBox()
         {
